@@ -2,11 +2,8 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    // clean: ["public/dist/**/*", "!public/dist/.gitkeep"],
+    clean: ["public/dist/**/*", "!public/dist/.gitkeep"],
     concat: {
-      // options: {
-      //   separator: ';',
-      // },
       dist: {
         src: ['public/client/**/*.js'],
         dest: 'public/dist/concatenatedClient.js'
@@ -110,27 +107,19 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
-    // 'jshint:beforeconcat',
-    'jshint',
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
-    'test',
-    // 'clean',
+    'clean',
     'concat',
-    // 'jshint:afterconcat',
-    'jshint',
+    'jshint:afterconcat',
     'uglify',
     'cssmin'
   ]);
 
-  // grunt upload
-  //
-  //
-  // --prod=true
 
-  grunt.registerTask('upload', function() {
+  grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
       grunt.task.run([ 'shell' ]);
     } else {
@@ -138,11 +127,8 @@ module.exports = function(grunt) {
     }
   });
 
-  // var target = grunt.option('prod');
   grunt.registerTask('deploy', [
-    // add your deploy tasks here
     'build',
-    // 'upload:'+true
     'upload'
   ]);
 

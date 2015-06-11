@@ -76,10 +76,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        command: {
-        // 'git push jason master',
-        'git push azure master'
-        // ].join('&&')
+        command: 'git push azure master'
       }
     },
   });

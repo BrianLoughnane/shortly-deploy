@@ -2,11 +2,11 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    clean: ["public/dist/**/*", "!public/dist/.gitkeep"],
+    // clean: ["public/dist/**/*", "!public/dist/.gitkeep"],
     concat: {
-      options: {
-        separator: ';',
-      },
+      // options: {
+      //   separator: ';',
+      // },
       dist: {
         src: ['public/client/**/*.js'],
         dest: 'public/dist/concatenatedClient.js'
@@ -77,9 +77,9 @@ module.exports = function(grunt) {
     shell: {
       prodServer: {
         command: [
-        'git push jason master',
+        // 'git push jason master',
         'git push azure master'
-        ].join('&&')
+        // ].join('&&')
       }
     },
   });
@@ -113,15 +113,17 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
-    'jshint:beforeconcat',
+    // 'jshint:beforeconcat',
+    'jshint',
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
     'test',
-    'clean',
+    // 'clean',
     'concat',
-    'jshint:afterconcat',
+    // 'jshint:afterconcat',
+    'jshint',
     'uglify',
     'cssmin'
   ]);
@@ -131,9 +133,9 @@ module.exports = function(grunt) {
   //
   // --prod=true
 
-  grunt.registerTask('upload', function(n) {
-    if(grunt.option('prod') || n) {
-      grunt.task.run([ 'shell:prodServer' ])
+  grunt.registerTask('upload', function() {
+    if(grunt.option('prod')) {
+      grunt.task.run([ 'shell' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -143,7 +145,8 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy', [
     // add your deploy tasks here
     'build',
-    'upload:'+true
+    // 'upload:'+true
+    'upload'
   ]);
 
 

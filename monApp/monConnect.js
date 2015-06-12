@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
+var crypto = require('crypto');
 
 
 var Schema = mongoose.Schema;
@@ -15,21 +16,14 @@ var User = new Schema({
 });
 
 User.methods.comparePassword = function(attemptedPassword, callback) {
-
-
-  // bcrypt.compare(attemptedPassword, this.get('password'), function(err, isMatch) {
-  //   callback(isMatch);
-  // });
+  bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
+    callback(isMatch);
+  });
 };
 
 User.methods.hashPassword = function(){
   var cipher = Promise.promisify(bcrypt.hash);
-  var pw = this.findOne({'username': this.username}, 'password', function(error, user) {
-    if (error) console.log(error);
-    return user.password;
-  });
-
-  return cipher(pw, null, null).bind(this)
+  return cipher(this.password, null, null).bind(this)
     .then(function(hash) {
       this.password = hash;
       this.save(function(error) {
@@ -47,6 +41,16 @@ var Link = new Schema({
     visits : Number,
     timestamps : Date
 });
+
+Link.methods.generateCode = function () {
+  var shasum = crypto.createHash('sha1');
+  shasum.update(this.url);
+  this.code = shasum.digest('hex').slice(0, 5);
+  this.save(function (err) {
+    if(err) console.log(err);
+  });
+};
+
 
 mongoose.model( 'User', User );
 mongoose.model( 'Link', Link );
